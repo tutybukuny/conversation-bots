@@ -1,0 +1,16 @@
+{
+  "bots": [
+    {
+      "api_id": 1,
+      "api_hash": "",
+      "db_path": "bot1"
+    }
+  ],
+  "control_channel_id": 1,
+  "conversation_channels": [
+    {
+      "id": 1,
+      "name": ""
+    }
+  ]
+}
