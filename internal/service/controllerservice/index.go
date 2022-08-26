@@ -2,6 +2,7 @@ package controllerservice
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/zelenin/go-tdlib/client"
 
@@ -23,6 +24,7 @@ type serviceImpl struct {
 	controlChannelID       int64
 	conversationChannelIDs []int64
 	lastSenderIdx          int
+	botIdxRegex            *regexp.Regexp
 }
 
 func New(cfg *config.BotConfig) *serviceImpl {
@@ -31,6 +33,8 @@ func New(cfg *config.BotConfig) *serviceImpl {
 		conversationChannelIDs: make([]int64, 0, len(cfg.ConversationChannels)),
 	}
 	container.Fill(service)
+
+	service.botIdxRegex = regexp.MustCompile("\\[bot(\\d+?)\\]")
 
 	for _, channel := range cfg.ConversationChannels {
 		service.conversationChannelIDs = append(service.conversationChannelIDs, channel.ID)
