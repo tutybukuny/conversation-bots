@@ -47,6 +47,21 @@ func bootstrap(cfg *config.Config) {
 	container.NamedSingleton("listener", func() *client.Client {
 		return tdClients[0]
 	})
+
+	for i, conversationChannel := range cfg.BotConfig.ConversationChannels {
+		if conversationChannel.ID == 0 {
+			chat, err := tdClients[0].SearchChatsOnServer(&client.SearchChatsOnServerRequest{
+				Query: conversationChannel.Name,
+				Limit: 1,
+			})
+			if err != nil || len(chat.ChatIds) == 0 {
+				ll.Error("cannot find chat with name", l.String("chat_name", conversationChannel.Name), l.Error(err))
+			} else {
+				ll.Info("found channel with name", l.String("chat_name", conversationChannel.Name), l.Int64("chat_id", chat.ChatIds[0]))
+				cfg.BotConfig.ConversationChannels[i].ID = chat.ChatIds[0]
+			}
+		}
+	}
 	//endregion
 
 	//region init service
